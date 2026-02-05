@@ -16,20 +16,20 @@
 #include <time.h>
 #include <fcntl.h>
 
-/* íƒ€ì´ë¨¸  */
+/* Å¸ÀÌ¸Ó  */
 #define CCHAR 0
 #ifdef CTIME
 #undef CTIME
 #endif
 #define CTIME 1
 
-/* ì™¼ìª½, ì˜¤ë¥¸ìª½, ì•„ëž˜, íšŒì „  */
+/* ¿ÞÂÊ, ¿À¸¥ÂÊ, ¾Æ·¡, È¸Àü  */
 #define LEFT 0
 #define RIGHT 1
 #define DOWN 2
 #define ROTATE 3
 
-/* ë¸”ë¡ ëª¨ì–‘ */
+/* ºí·Ï ¸ð¾ç */
 #define I_BLOCK 0
 #define	T_BLOCK 1
 #define S_BLOCK 2
@@ -38,7 +38,7 @@
 #define J_BLOCK 5
 #define O_BLOCK 6
 
-/* UI ìœ„ì¹˜ */
+/* UI À§Ä¡ */
 #define TETRIS_TABLE_X 0
 #define TETRIS_TABLE_Y 0
 
@@ -48,7 +48,7 @@
 #define SCORE_TABLE_X 25
 #define SCORE_TABLE_Y 10
 
-/* ê²Œìž„ ì‹œìž‘, ê²Œìž„ ì¢…ë£Œ */
+/* °ÔÀÓ ½ÃÀÛ, °ÔÀÓ Á¾·á */
 #define GAME_START 0
 #define GAME_END 1
 
@@ -56,39 +56,39 @@
 
 /*
 
- * ë¸”ë¡ ëª¨ì–‘(I, T, S, Z, L, J, O) 
- * 4*4 ë°°ì—´ì˜ 2ì°¨ì› ë°°ì—´
- * ëª¨ë“  ë¸”ë¡ì˜ ëª¨ì–‘ì„ í‘œì‹œ
+ * ºí·Ï ¸ð¾ç(I, T, S, Z, L, J, O) 
+ * 4*4 ¹è¿­ÀÇ 2Â÷¿ø ¹è¿­
+ * ¸ðµç ºí·ÏÀÇ ¸ð¾çÀ» Ç¥½Ã
  *
- * ë¸”ë¡ì˜ ëª¨ì–‘ì„ í‘œì‹œ
- * ì™¼ìª½, ì˜¤ë¥¸ìª½, ì•„ëž˜, íšŒì „ 
- * 4*4 ë°°ì—´ì˜ 2ì°¨ì› ë°°ì—´
- * ëª¨ë“  ë¸”ë¡ì˜ ëª¨ì–‘ì„ í‘œì‹œ
+ * ºí·ÏÀÇ ¸ð¾çÀ» Ç¥½Ã
+ * ¿ÞÂÊ, ¿À¸¥ÂÊ, ¾Æ·¡, È¸Àü 
+ * 4*4 ¹è¿­ÀÇ 2Â÷¿ø ¹è¿­
+ * ¸ðµç ºí·ÏÀÇ ¸ð¾çÀ» Ç¥½Ã
  *
- * 4*4*4 ë°°ì—´ì˜ 3ì°¨ì› ë°°ì—´
+ * 4*4*4 ¹è¿­ÀÇ 3Â÷¿ø ¹è¿­
  */
 
 
 char i_block[4][4][4] = {
-    {  // ì²« ë²ˆì§¸ íšŒì „ ìƒíƒœ
+    {  // Ã¹ ¹øÂ° È¸Àü »óÅÂ
         {0, 0, 0, 0}, 
 		{1, 1, 1, 1}, 
 		{0, 0, 0, 0}, 
 		{0, 0, 0, 0} 
 	},
-    {  // ë‘ ë²ˆì§¸ íšŒì „ ìƒíƒœ
+    {  // µÎ ¹øÂ° È¸Àü »óÅÂ
         {0, 1, 0, 0}, 
 		{0, 1, 0, 0}, 
 		{0, 1, 0, 0}, 
 		{0, 1, 0, 0} 
 	},
-    {  // ì„¸ ë²ˆì§¸ íšŒì „ ìƒíƒœ
+    {  // ¼¼ ¹øÂ° È¸Àü »óÅÂ
         {0, 0, 0, 0}, 
 		{1, 1, 1, 1}, 
 		{0, 0, 0, 0}, 
 		{0, 0, 0, 0} 
 	},
-    {  // ë„¤ ë²ˆì§¸ íšŒì „ ìƒíƒœ
+    {  // ³× ¹øÂ° È¸Àü »óÅÂ
         {0, 1, 0, 0}, 
 		{0, 1, 0, 0}, 
 		{0, 1, 0, 0}, 
@@ -261,19 +261,19 @@ char o_block[4][4][4] = {
 };
 
 
-/* í…ŒíŠ¸ë¦¬ìŠ¤ íŒì„ 2ì°¨ì› ë°°ì—´ë¡œ í‘œí˜„
- * 2ì°¨ì› ë°°ì—´ì˜ 2ì°¨ì› ë°°ì—´
- * ëª¨ë“  ë¸”ë¡ì˜ ëª¨ì–‘ì„ í‘œì‹œ
+/* Å×Æ®¸®½º ÆÇÀ» 2Â÷¿ø ¹è¿­·Î Ç¥Çö
+ * 2Â÷¿ø ¹è¿­ÀÇ 2Â÷¿ø ¹è¿­
+ * ¸ðµç ºí·ÏÀÇ ¸ð¾çÀ» Ç¥½Ã
  *
- * 20*8 ë°°ì—´
- * ëª¨ë“  ë¸”ë¡ì˜ ëª¨ì–‘ì„ í‘œì‹œ
- * ëª¨ë“  ë¸”ë¡ì˜ ëª¨ì–‘ì„ í‘œì‹œ*/
+ * 20*8 ¹è¿­
+ * ¸ðµç ºí·ÏÀÇ ¸ð¾çÀ» Ç¥½Ã
+ * ¸ðµç ºí·ÏÀÇ ¸ð¾çÀ» Ç¥½Ã*/
 
 char tetris_table[21][10];
 
-/* ê²Œìž„ ì¢…ë£Œ ë•¨ë§ˆë‹¤
- * ì´ë¦„ê³¼ ë“ì ìˆ˜ì™€ 
- * ë‚ ì§œì™€ ì‹œê°„ê³¼ ìˆœìœ„ë¥¼ ì €ìž¥
+/* °ÔÀÓ Á¾·á ‹x¸¶´Ù
+ * ÀÌ¸§°ú µæÁ¡¼ö¿Í 
+ * ³¯Â¥¿Í ½Ã°£°ú ¼øÀ§¸¦ ÀúÀå
  * */
 typedef struct result
 {
@@ -290,17 +290,17 @@ typedef struct result
 
 result* head = NULL;
 
-int block_number = 0;  /*ë¸”ë¡ ë²ˆí˜¸*/
-int next_block_number = 0; /*ë‹¤ìŒ ë¸”ë¡ ë²ˆí˜¸ */
-int block_state = 0; /*ë¸”ë¡ ìƒíƒœ, ì™¼ìª½, ì˜¤ë¥¸ìª½, ì•„ëž˜, íšŒì „  */
-int next_block_state = 0; /*ë‹¤ìŒ ë¸”ë¡ ìƒíƒœ, ì™¼ìª½, ì˜¤ë¥¸ìª½, ì•„ëž˜, íšŒì „  */
+int block_number = 0;  /*ºí·Ï ¹øÈ£*/
+int next_block_number = 0; /*´ÙÀ½ ºí·Ï ¹øÈ£ */
+int block_state = 0; /*ºí·Ï »óÅÂ, ¿ÞÂÊ, ¿À¸¥ÂÊ, ¾Æ·¡, È¸Àü  */
+int next_block_state = 0; /*´ÙÀ½ ºí·Ï »óÅÂ, ¿ÞÂÊ, ¿À¸¥ÂÊ, ¾Æ·¡, È¸Àü  */
 
-int x = 3, y = 0; /*ë¸”ë¡ì˜ ìœ„ì¹˜*/
+int x = 3, y = 0; /*ºí·ÏÀÇ À§Ä¡*/
 
-int game = GAME_END; /*ê²Œìž„ ì‹œìž‘, ê²Œìž„ ì¢…ë£Œ*/
-int best_point = 0; /* ìµœê³  ì ìˆ˜*/
+int game = GAME_END; /*°ÔÀÓ ½ÃÀÛ, °ÔÀÓ Á¾·á*/
+int best_point = 0; /* ÃÖ°í Á¡¼ö*/
 
-long point = 0; /* í˜„ìž¬ ì ìˆ˜*/
+long point = 0; /* ÇöÀç Á¡¼ö*/
 
 int delay_count = 4;
 
@@ -309,11 +309,11 @@ int delay_count = 4;
 
 
 char (*get_block_shape(int block_number, int block_state))[4];
-int display_menu(void); /* ë©”ë‰´ í‘œì‹œ*/
+int display_menu(void); /* ¸Þ´º Ç¥½Ã*/
 int game_start();
 int check_collision();
 int check_game_over();
-int clear_lines(); /* ì •ë¦¬í•œ ë¼ì¸ ìˆ˜ ë°˜í™˜ */
+int clear_lines(); /* Á¤¸®ÇÑ ¶óÀÎ ¼ö ¹ÝÈ¯ */
 void search_result();
 void print_result();
 void disable_input_buffering();
@@ -323,14 +323,14 @@ void enable_input_blocking();
 void init_tetris_table();
 void init_game();
 void save_block();
-void calc_init_position(); /* ë¸”ë½ë§ˆë‹¤ ì´ˆê¸° ì‹œìž‘ìœ„ì¹˜ ê²°ì •*/
+void calc_init_position(); /* ºí¶ô¸¶´Ù ÃÊ±â ½ÃÀÛÀ§Ä¡ °áÁ¤*/
 void drop_new_block();
 void drop_timer_handler(int signum);
 void start_drop_timer();
 void stop_drop_timer();
 void clear_game();
 void save_result();
-void display_game(); /* í˜„ìž¬ ê²Œìž„ ìƒíƒœ í‘œì‹œ */
+void display_game(); /* ÇöÀç °ÔÀÓ »óÅÂ Ç¥½Ã */
 void clear_all();
 void move_cursor(int row, int col);
 void print_tetris_table();
@@ -344,8 +344,8 @@ result* new_result();
 
 
 
-/// í…ŒíŠ¸ë¦¬ìŠ¤ ê²Œìž„ ë©”ì¸ í•¨ìˆ˜
-/// ë©”ë‰´ë¥¼ í‘œì‹œí•˜ê³  ì‚¬ìš©ìžì˜ ì„ íƒì— ë”°ë¼ ê²Œìž„ì„ ì‹œìž‘í•˜ê±°ë‚˜ ê²°ê³¼ë¥¼ ê²€ìƒ‰í•˜ê±°ë‚˜ ì¢…ë£Œí•©ë‹ˆë‹¤.
+/// Å×Æ®¸®½º °ÔÀÓ ¸ÞÀÎ ÇÔ¼ö
+/// ¸Þ´º¸¦ Ç¥½ÃÇÏ°í »ç¿ëÀÚÀÇ ¼±ÅÃ¿¡ µû¶ó °ÔÀÓÀ» ½ÃÀÛÇÏ°Å³ª °á°ú¸¦ °Ë»öÇÏ°Å³ª Á¾·áÇÕ´Ï´Ù.
 /// @param  
 /// @return 
 int main(void)
@@ -379,7 +379,7 @@ int main(void)
 	return 0;
 }
 
-/* ë©”ë‰´ í‘œì‹œ*/
+/* ¸Þ´º Ç¥½Ã*/
 int display_menu(void)
 {
 	// 
@@ -734,11 +734,11 @@ void print_tetris_table()
 			}
 			else if(tetris_table[i][j] == 1)
 			{
-				printf("â–  ");
+				printf("¡á ");
 			}
 			else
 			{
-				printf("â–¡ ");
+				printf("¡à ");
 			}
 		}
 		printf("\n");
@@ -758,7 +758,7 @@ void print_block(int block_number, int block_state, int x, int y)
 				if(y + i >= 0)
 				{
 					move_cursor(y + i, 2 * x + 2 * j);
-                	printf("â–  ");
+                	printf("¡á ");
 				}
             }
         }
@@ -773,7 +773,7 @@ void print_score()
 	printf("Best Score: %ld", best_point <= point ? point : best_point);
 }
 
-// ì»¤ì„œë¥¼ (row, col) ìœ„ì¹˜ë¡œ ì´ë™ (0ë¶€í„° ì‹œìž‘)
+// Ä¿¼­¸¦ (row, col) À§Ä¡·Î ÀÌµ¿ (0ºÎÅÍ ½ÃÀÛ)
 void move_cursor(int row, int col)
 {
     printf("\033[%d;%dH", row + 1, col + 1);
@@ -863,7 +863,7 @@ void drop_new_block()
 	calc_init_position();
 }
 
-void calc_init_position() /* ë¸”ë½ë§ˆë‹¤ ì´ˆê¸° ì‹œìž‘ìœ„ì¹˜ ê²°ì •*/
+void calc_init_position() /* ºí¶ô¸¶´Ù ÃÊ±â ½ÃÀÛÀ§Ä¡ °áÁ¤*/
 {
 	char (*block_shape)[4] = get_block_shape(block_number, block_state);
 
@@ -917,7 +917,7 @@ int clear_lines()
                 tetris_table[0][j] = 0;
             }
 
-            i++; // ê°™ì€ ì¤„ì„ ë‹¤ì‹œ ê²€ì‚¬
+            i++; // °°Àº ÁÙÀ» ´Ù½Ã °Ë»ç
         }
     }
 
